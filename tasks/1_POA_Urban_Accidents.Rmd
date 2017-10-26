@@ -41,4 +41,48 @@ df <- read_delim(URL, delim=";")
 df
 ```
 
+Load libraries
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(tidyr)
+
+```
+
+
+
+
+
+```{r}
+ df %>% select(FX_HORA, CONT_ACID) %>% group_by(FX_HORA) %>% summarise(sum(CONT_ACID)) %>% set_colnames(c("FX_HORA", "ACIDENTES_COUNT")) %>% ggplot(aes(x=FX_HORA,y=ACIDENTES_COUNT)) +geom_col() +scale_x_continuous(breaks = seq(0, 23, by = 1)) + scale_y_continuous(breaks = seq(0, 2000, by = 100))
+
+```
+
+In 2005 the time of the day with the most accidents was 6 pm. 
+
+
+
+```{r}
+ df %>% select(FX_HORA, FATAIS) %>% group_by(FX_HORA) %>% summarise(sum(FATAIS)) %>% set_colnames(c("FX_HORA", "FATAIS_COUNT")) %>% ggplot(aes(x=FX_HORA,y=FATAIS_COUNT)) +geom_col(fill = "red") +scale_x_continuous(breaks = seq(0, 23, by = 1)) + scale_y_continuous(breaks = seq(0, 30, by = 1))
+
+```
+
+
+
+
+
+```{r}
+ df %>% select(FX_HORA, FATAIS, CONT_ACID) %>% group_by(FX_HORA) %>% summarise(sum(FATAIS),sum(CONT_ACID)) %>% set_colnames(c("FX_HORA", "FATAIS_COUNT","CONT_ACID")) %>%
+  mutate(FATALITIES_RATIO = FATAIS_COUNT/CONT_ACID) %>% ggplot(aes(x=FX_HORA,y=FATALITIES_RATIO)) +geom_col(fill = "#CC0000") +scale_x_continuous(breaks = seq(0, 23, by = 1)) + scale_y_continuous(breaks = seq(0, 30, by = 0.01))
+ 
+
+
+```
+
+
+
+
 
