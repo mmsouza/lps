@@ -71,18 +71,45 @@ In 2005 the time of the day with the most accidents was 6 pm.
 ```
 
 
-
+This second graph show the fatalities number in a given hour. Despite the biggest count still the same, the data presents a diferent distribuition with a more even distribuition trhu tha day.
 
 
 ```{r}
  df %>% select(FX_HORA, FATAIS, CONT_ACID) %>% group_by(FX_HORA) %>% summarise(sum(FATAIS),sum(CONT_ACID)) %>% set_colnames(c("FX_HORA", "FATAIS_COUNT","CONT_ACID")) %>%
-  mutate(FATALITIES_RATIO = FATAIS_COUNT/CONT_ACID) %>% ggplot(aes(x=FX_HORA,y=FATALITIES_RATIO)) +geom_col(fill = "#CC0000") +scale_x_continuous(breaks = seq(0, 23, by = 1)) + scale_y_continuous(breaks = seq(0, 30, by = 0.01))
+  mutate(FATALITIES_RATIO = FATAIS_COUNT/CONT_ACID) %>% mutate(FATALITIES_RATIO = FATALITIES_RATIO*100) %>% ggplot(aes(x=FX_HORA,y=FATALITIES_RATIO)) +geom_col(fill = "#CC0000") +scale_x_continuous(breaks = seq(0, 23, by = 1)) + scale_y_continuous(breaks = seq(0, 30, by = .5),labels = function(x){ paste0(x, "%") })
  
 
 
 ```
 
 
+The diferent distribuition lead to another analysis, the ratio accidents number by number of fatalities. It shows a cenario that most deadly accidents occur in the dawn peirod.  
+
+```{r}
+library(ggmap)
+library(stringr)
+
+df3<-df
+df3 <- df3 %>% mutate(LATITUDE = as.numeric(sub("(.{3})(.*)", "\\1.\\2", as.vector(LATITUDE, "character"))),LONGITUDE = as.numeric(sub("(.{3})(.*)", "\\1.\\2", as.vector(LONGITUDE, "character")))  ) 
 
 
+df2<- df3 %>% select(LATITUDE, LONGITUDE,FATAIS) %>% filter(FATAIS > 0)
+df4<- df3 %>% select(LATITUDE, LONGITUDE,TIPO_ACID) %>% filter(str_detect(TIPO_ACID, "CAPOTAGEM"))
+
+
+
+
+
+
+
+                    
+
+```
+
+```{r}
+POA = ggmap(get_map(location = c(lon = -51.219499, lat = -30.031537) , scale="auto", zoom=15,maptype = "roadmap" ),extent = "panel")
+
+POA +  geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df2, col="red", alpha=1, size=1)+ geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df4, col="blue", alpha=0.5, size=1)  + ggsave("plot.png") 
+
+```
 
