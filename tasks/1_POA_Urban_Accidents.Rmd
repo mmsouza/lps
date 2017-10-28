@@ -89,6 +89,7 @@ The diferent distribuition lead to another analysis, the ratio accidents number 
 library(ggmap)
 library(stringr)
 
+
 df3<-df
 df3 <- df3 %>% mutate(LATITUDE = as.numeric(sub("(.{3})(.*)", "\\1.\\2", as.vector(LATITUDE, "character"))),LONGITUDE = as.numeric(sub("(.{3})(.*)", "\\1.\\2", as.vector(LONGITUDE, "character")))  ) 
 
@@ -97,19 +98,28 @@ df2<- df3 %>% select(LATITUDE, LONGITUDE,FATAIS) %>% filter(FATAIS > 0)
 df4<- df3 %>% select(LATITUDE, LONGITUDE,TIPO_ACID) %>% filter(str_detect(TIPO_ACID, "CAPOTAGEM"))
 
 
-
-
-
-
-
-                    
-
 ```
+
+Ploting static map
 
 ```{r}
 POA = ggmap(get_map(location = c(lon = -51.219499, lat = -30.031537) , scale="auto", zoom=15,maptype = "roadmap" ),extent = "panel")
 
-POA +  geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df2, col="red", alpha=1, size=1)+ geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df4, col="blue", alpha=0.5, size=1)  + ggsave("plot.png") 
+POA +  geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df2, col="red", alpha=1, size=1)+ geom_point(aes(x=LONGITUDE, y=LATITUDE), data=df4, col="blue", alpha=0.5, size=1)+ ggsave("plot.png") 
+
+```
+
+Interactive Map with : leaflet
+
+```{r}
+ library(leaflet)
+
+colnames(df3)[36] <-"lat"
+colnames(df3)[37] <- "lon"
+POA_int <- ggmap::geocode("Porto Alegre,RS") 
+leaflet(df3) %>% addTiles() %>% addMarkers(clusterOptions = markerClusterOptions())
+
+
 
 ```
 
