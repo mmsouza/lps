@@ -17,7 +17,7 @@ geometry: margin=1.5in, top=0.5in, bottom=0.5in
 
 install.packages("ggplot2", repos="http://cran.rstudio.com/")
 install.packages("tidyverse", repos="http://cran.rstudio.com/")
-
+install.packages("reshape", repos="http://cran.rstudio.com/")
 ```
 
 
@@ -32,7 +32,7 @@ library(dplyr)
 library(magrittr)
 library(tidyr)
 library(readr)
-
+library(reshape)
 
 
 
@@ -45,25 +45,22 @@ for (y in 2002:2016){
   URL = paste0("https://raw.githubusercontent.com/mmsouza/lps/master/Final%20Task/fee-",as.character(y),"-mun-indicadores-criminais-homicidio-doloso-103597.csv")
   aux= y-2001
   df_list[[aux]] <- read_delim(URL, delim=",")
-  colnames(df_list[[aux]])[5] <- "Homicídio_Count"
-}
+  colnames(df_list[[aux]])[5] <- "Homi_Count"
+  df_list[[aux]]<-df_list[[aux]] %>% mutate(ano= y)
+  
+  }
 
-df_list[[1]]
+data <- merge_recurse(df_list)
 
-
+data$Homi_Count <- as.numeric(data$Homi_Count)
 
 
 ```
 
 ```{r}
 
+data %>% select(Homi_Count,ano) %>% group_by(ano) %>% summarise(mean(Homi_Count))
 
-df_2016 %>% select(Homicídio_Count)%>% filter(Homicídio_Count < 600) %>% mutate(n= 1:n()) %>% ggplot(aes(x=n, y = Homicídio_Count)) + geom_point() + scale_y_continuous(breaks = seq(0, 200, by = 100))
-
-df_2016 %>% select(Homicídio_Count) %>%  mutate(n= 1:n()) %>%  summarise(mean(Homicídio_Count))
-
-df<- df_2016 %>% select(Homicídio_Count) %>% filter(Homicídio_Count < 600)
-df<- as.data.frame(df)
 
 
 
