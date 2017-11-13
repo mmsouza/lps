@@ -31,14 +31,35 @@ library(ggplot2)
 library(dplyr)
 library(magrittr)
 library(tidyr)
+library(readr)
 
-URL <- "http://dados.fee.tche.br/ckan-download/fee-2016-mun-indicadores-criminais-homicidio-doloso-103597.csv"
-df <- read_delim(URL, delim=";")
-df
+URL <- "https://raw.githubusercontent.com/mmsouza/lps/master/Final%20Task/fee-2016-mun-indicadores-criminais-homicidio-doloso-103597.csv"
+df_2016 <- read_delim(URL, delim=",")
+colnames(df_2016)[5] <- "Homicídio_Count"
 
-df <- read.csv2(,sep=",")
+df_2016 %>% select(Homicídio_Count)%>% filter(Homicídio_Count < 600) %>% mutate(n= 1:n()) %>% ggplot(aes(x=n, y = Homicídio_Count)) + geom_point() + scale_y_continuous(breaks = seq(0, 200, by = 100))
+
+df_2016 %>% select(Homicídio_Count) %>%  mutate(n= 1:n()) %>%  summarise(mean(Homicídio_Count))
+
+df<- df_2016 %>% select(Homicídio_Count) %>% filter(Homicídio_Count < 600)
+df<- as.data.frame(df)
 
 
+
+
+
+a<-t.test(df, mu = 5.28 ,conf.level = 0.95)
+a$conf.int[2]
+a$estimate
+
+m = c(unname(a$estimate)) 
+maxx = c(a$conf.int[2]) 
+minn = c(a$conf.int[1]) 
+year=c(2016)
+Avrege_df = data.frame(m, maxx, minn,year)
+
+ggplot(Avrege_df, aes(x=year, y=m)) + 
+    geom_errorbar(aes(ymin=minn, ymax=maxx), width=.1) +geom_point() + scale_y_continuous(limits = c(0,10),breaks = seq(0, 50, by = 1)) + scale_x_continuous(limits = c(2007,2017),breaks = seq(2007, 2016, by = 1))
 
 
 ```
