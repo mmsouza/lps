@@ -39,17 +39,16 @@ library(readr)
 
 
 
+df_list <- list()
 
+for (y in 2002:2016){
+  URL = paste0("https://raw.githubusercontent.com/mmsouza/lps/master/Final%20Task/fee-",as.character(y),"-mun-indicadores-criminais-homicidio-doloso-103597.csv")
+  aux= y-2001
+  df_list[[aux]] <- read_delim(URL, delim=",")
+  colnames(df_list[[aux]])[5] <- "Homicídio_Count"
+}
 
-aa="2015"
-URL = paste0("https://raw.githubusercontent.com/mmsouza/lps/master/Final%20Task/fee-",aa,"-mun-indicadores-criminais-homicidio-doloso-103597.csv")
-
-
-df_2016 <- read_delim(URL, delim=",")
-colnames(df_2016)[5] <- "Homicídio_Count"
-
-
-
+df_list[[1]]
 
 
 
