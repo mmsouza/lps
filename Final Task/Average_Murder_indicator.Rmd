@@ -59,25 +59,15 @@ data$Homi_Count <- as.numeric(data$Homi_Count)
 
 ```{r}
 
-data %>% select(Homi_Count,ano) %>% group_by(ano) %>% summarise(mean(Homi_Count))
+data %>% select(Homi_Count,ano) %>% group_by(ano) %>% filter(Homi_Count <100)%>%  do(b = t.test(.$Homi_Count,conf.level=0.95)) %>%  
+  mutate( media = unname(b$estimate) ,maxx = c(b$conf.int[2]) ,minn = c(b$conf.int[1])) %>% ggplot(aes(x=ano, y=media)) + geom_errorbar(aes(ymin=minn, ymax=maxx), width=.1) +geom_point() +scale_y_continuous(limits = c(0,17),breaks = seq(0, 18, by = 1)) + scale_x_continuous(limits = c(2001.8,2017),breaks = seq(2002, 2016, by = 1))
+
+df_2015 <- data %>% filter(ano ==2015)
+df_2014 <- data %>% filter(ano ==2014)
+t.test(df_2014$Homi_Count,df_2015$Homi_Count,conf.level=0.95, alternative = "greater")
 
 
 
-
-
-
-a<-t.test(df, mu = 5.28 ,conf.level = 0.95)
-a$conf.int[2]
-a$estimate
-
-m = c(unname(a$estimate)) 
-maxx = c(a$conf.int[2]) 
-minn = c(a$conf.int[1]) 
-year=c(2016)
-Avrege_df = data.frame(m, maxx, minn,year)
-
-ggplot(Avrege_df, aes(x=year, y=m)) + 
-    geom_errorbar(aes(ymin=minn, ymax=maxx), width=.1) +geom_point() + scale_y_continuous(limits = c(0,10),breaks = seq(0, 50, by = 1)) + scale_x_continuous(limits = c(2007,2017),breaks = seq(2007, 2016, by = 1))
 
 
 ```
