@@ -1,0 +1,46 @@
+---
+title: "Average number of murder indicator per city in Rio Grande do Sul"
+author: "Matheus Souza"
+date: "November 2017"
+output:
+  pdf_document:
+    number_sections: yes
+  html_document: default
+geometry: margin=1.5in, top=0.5in, bottom=0.5in
+---
+
+# Installing Section 
+ 
+
+```{r message=FALSE, warning= FALSE}
+
+
+install.packages("ggplot2", repos="http://cran.rstudio.com/")
+install.packages("tidyverse", repos="http://cran.rstudio.com/")
+
+```
+
+
+
+
+
+```{r message=FALSE, warning= FALSE}
+
+
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(tidyr)
+
+URL <- "http://dados.fee.tche.br/ckan-download/fee-2016-mun-indicadores-criminais-homicidio-doloso-103597.csv"
+df <- read_delim(URL, delim=";")
+df
+
+df <- read.csv2(,sep=",")
+
+
+
+
+```
+
+
