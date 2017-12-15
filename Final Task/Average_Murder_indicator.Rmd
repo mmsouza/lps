@@ -95,7 +95,7 @@ In the above graph, we can see that are points that could be considered outliers
 
 
 ```{r}
-data %>% select(Homi_Count,ano) %>% group_by(ano) %>% filter(Homi_Count < 200) %>%  do(b = t.test(.$Homi_Count,conf.level=0.95)) %>% mutate( media = unname(b$estimate) ,maxx = c(b$conf.int[2]) ,minn = c(b$conf.int[1])) %>% ggplot(aes(x=ano, y=media)) + geom_errorbar(aes(ymin=minn, ymax=maxx), width=.1) +geom_point() +scale_y_continuous(limits = c(0,30),breaks = seq(0, 30, by = 1)) + scale_x_continuous(limits = c(2001.8,2017),breaks = seq(2002, 2016, by = 1))
+data %>% select(Homi_Count,ano) %>% group_by(ano) %>% filter(Homi_Count < 200) %>%  do(b = t.test(.$Homi_Count,conf.level=0.95)) %>% mutate( media = unname(b$estimate) ,maxx = c(b$conf.int[2]) ,minn = c(b$conf.int[1])) %>% ggplot(aes(x=ano, y=media)) + geom_errorbar(aes(ymin=minn, ymax=maxx), width=.1) +geom_point() +scale_y_continuous(limits = c(0,13),breaks = seq(0, 13, by = 1)) + scale_x_continuous(limits = c(2001.8,2017),breaks = seq(2002, 2016, by = 1))
 
 ```
 
@@ -113,7 +113,6 @@ data %>% group_by(ano) %>% summarise(tam=n()) %>% arrange(desc(ano))
 Now we can see the reason for that significant drop in the average, the last two years observations count are more than twice the others years. Beyond the unbalanced observation count, is important to know if cities observed are coherent.  For instance, in 2014 and 2008 both have an observation count of 223, but are all these 223 cities the same?
 
 ```{r}
-
 df2014 <- data %>% filter(ano == 2014)
 
 data %>% filter(ano == 2008) %>%  filter(Município %in% df2014$Município )  %>% summarise(tam=n())
@@ -122,6 +121,7 @@ data %>% filter(ano == 2008) %>%  filter(Município %in% df2014$Município )  %>
 we found that only 155 of 223 observations are about the same city.  In order to maintain the coherence, we should find the sub-dataset that has exactly the same cities. 
 
 ```{r}
+
 
 data %>% group_by(Município) %>% filter(n() == 15)  %>%  group_by(ano) %>%  summarise(tam=n())
 sub_data <- data %>% group_by(Município) %>% filter(n() == 15)
